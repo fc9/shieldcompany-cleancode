@@ -14,10 +14,10 @@ class Operation
         float $portion4,
         float $index
     ): array {
-        $calculator_factor = $this->calculateFactor($portion1, $portion2, $portion3, $portion4, $index);
-        $evaluations_of_values = $this->evaluateValues($values);
-
-        return compact('evaluations_of_values', 'calculator_factor');
+        return [
+            'calculator_factor' => $this->calculateFactor($portion1, $portion2, $portion3, $portion4, $index),
+            'evaluations_of_values' => $this->evaluateValues($values),
+        ];
     }
 
     protected function calculateFactor(
@@ -46,16 +46,10 @@ class Operation
 
     protected function evaluateValue(float $value): string
     {
-        if ($value === self::FREE_VALUE) {
-            return 'FREE';
-        } elseif ($value > self::FREE_VALUE && $value <= self::MAX_CHEAP_VALUE) {
-            return 'CHEAP';
-        } elseif ($value > self::MAX_CHEAP_VALUE && $value <= self::MAX_GOOD_VALUE) {
-            return 'GOOD_VALUE';
-        } elseif ($value > self::MAX_GOOD_VALUE) {
-            return 'EXPENSIVE';
-        }
-
-        return '';
+        if($value < self::FREE_VALUE) return '?';
+        if ($value === self::FREE_VALUE) return 'FREE';
+        if ($value <= self::MAX_CHEAP_VALUE) return 'CHEAP';
+        if ($value <= self::MAX_GOOD_VALUE) return 'GOOD_VALUE';
+        return 'EXPENSIVE';
     }
 }
